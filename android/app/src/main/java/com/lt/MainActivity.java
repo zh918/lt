@@ -1,6 +1,8 @@
 package com.lt;
 
 import com.facebook.react.ReactActivity;
+import com.reactnativenavigation.NavigationReactPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 
 public class MainActivity extends ReactActivity {
 

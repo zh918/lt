@@ -1,18 +1,20 @@
 // 登录
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Text, TextInput, View, Image,TouchableHighlight,TouchableOpacity } from 'react-native'
 import Styles from '../../styles/login.style'
 
-export default class Login extends Component {
+class Login extends Component {
     constructor(props) {
       super(props);
       this.state = {
         isSend:true,
-        mobile:null,
+        mobile:props.mobile,
         code:null,
         second:60
       };
       this.intervalId = null;
+      console.log('传入数据', props,this.state);
     }
 
     componentDidMount() {
@@ -33,7 +35,6 @@ export default class Login extends Component {
     }
 
     render() {
-
         return (
             <View style={Styles.container}>
               <Image
@@ -119,10 +120,36 @@ export default class Login extends Component {
 
     _handleSubmit() {
       console.log('提交数据',this.state);
-      <Redirect to={{
-        pathname: '/home'
-      }}/>
+      this.props.actions();
+      this.props.navigator.push({
+        screen: 'lt.home',
+        title: '首页'
+      });
     }
 }
+
+Login.navigatorStyle = {
+	navBarHidden:true
+}
+
+const mapStateToProps = (state,props) => {
+  console.log('mapStateTopProps',state,props);
+  return {mobile:props.name}
+}
+
+const mapDispatchToProps = (dispatch) => {
+  console.log('dispatch',dispatch);
+  return {
+    actions:function(){
+      console.log('mapDispatchToProps hello');
+    }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login)
+
 
 // todo 这一层view就代替了containers层。把数据和行为都注入进去
