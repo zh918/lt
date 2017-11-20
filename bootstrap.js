@@ -1,37 +1,28 @@
-import './src/common/global'
-
-import {createStore, applyMiddleware, combineReducers} from 'redux'
 import {Provider} from 'react-redux'
 import {Navigation} from 'react-native-navigation'
-import thunk from 'redux-thunk'
 
-import * as loginActions from './src/redux/reducers/login/actions'
-import reducers from './src/redux/reducers'
+import './src/common/global'
 import { registerScreens } from './src/routes'
-
-
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer);
+import * as configActions from './src/redux/reducers/config/actions'
+import store from './src/redux/store/configureStore'
 
 registerScreens(store, Provider);
 
 export default class Bootstrap {
   constructor() {
     store.subscribe(this.onStoreUpdate.bind(this));
-    store.dispatch(loginActions.login());
+    store.dispatch(configActions.configLoad());
   }
 
   onStoreUpdate() {
     const state = store.getState();
-    this.startApp(state.login.root);
+    this.startApp(state.config.start);
   }
 
-  startApp(root) {
-    switch (root) {
+  startApp(start) {
+    switch (start) {
       case 'login':
         console.log('start app login');
-
         Navigation.startSingleScreenApp({
           screen: {
             screen: 'lt.login'
@@ -47,11 +38,23 @@ export default class Bootstrap {
 
 
         break;
-      case 'loginOut':
-        console.log('start app login out');
+      case 'boot_animate':
+        console.log('引导动画');
         break;
       default:
-        console.log('start app default');
+        console.log('直接抵达根目录');
+        Navigation.startSingleScreenApp({
+          screen: {
+            screen: 'lt.home'
+          },
+          passProps: {
+            name:'stephen',
+            num: 1234,
+            cb: function() {
+              return 'Hello from a function!';
+            }
+          }
+        });
     }
   }
 }
